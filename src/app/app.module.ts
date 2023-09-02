@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 //NGRX
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import {itemsReducer} from "./state/reducers/item.reducer";
+import {ROOT_REDUCERS} from "./state/state/item.state";
 
 
 
@@ -17,7 +19,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({}, {}),// Lo que se agrego de manra automatica
+    //Imaginar como un json
+    StoreModule.forRoot(ROOT_REDUCERS),// Lo que se agrego de manra automatica
     StoreDevtoolsModule.instrument({name: 'TEST'})  // Se agrego
   ],
   providers: [],

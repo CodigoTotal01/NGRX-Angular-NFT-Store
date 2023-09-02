@@ -1,7 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ItemModel } from '@core/models/Item.interface';
-import { ShowCaseService } from '@modules/show-case/services/show-case.service';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+
+import {Store} from "@ngrx/store";
+import {loadedItems, loadItems} from "../../../../state/actions/items.actions";
+import {Observable} from "rxjs";
+import {selectLoading} from "../../../../state/selectors/items.selectors";
+import {ShowCaseService} from "@modules/show-case/services/show-case.service";
+import {ItemModel} from "@core/models/Item.interface";
+
 
 @Component({
   selector: 'app-show-case-page',
@@ -10,18 +15,22 @@ import { Observable } from 'rxjs';
 })
 export class ShowCasePageComponent implements OnInit {
 
-  listItems: ItemModel[] = []
-  listItems$: Observable<any> = new Observable()
 
-  constructor(
-    private showCase: ShowCaseService,
-  ) {
+  loading$: Observable<boolean> = new Observable<boolean>();
 
-
-  }
+  constructor( private store:Store<any>,
+               private showCaseService: ShowCaseService) {}
 
   ngOnInit(): void {
-    this.loadData()
+
+    this.loading$ = this.store.select(selectLoading);
+
+
+    this.store.dispatch(loadItems());
+
+    this.showCaseService.getDataApi().subscribe((response: ItemModel[])=> {
+      this.store.dispatch(loadedItems({items: response}));
+    })
   }
 
   loadData(): void {
